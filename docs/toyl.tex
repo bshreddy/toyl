@@ -1,0 +1,43 @@
+\documentclass[11pt]{article}
+\input{structure.tex}
+
+\title{Toyl Programming Language}
+\author{Sai Hemanth Bheemreddy\\Georgia Institute of Technology}
+\date{}
+
+\begin{document}
+\maketitle
+
+This is a living document for me to plan and implement my toy-ish programming language, named ``toyl'' for ``TOY programming Language.'' (pronounced same as "toil" cause it's gonna be a pain in my a** to get done.)
+\begin{enumerate}
+  \item Learn Compilers
+  \item Learn the math behind computer science
+  \item Eventually have a turing-complete programming language that supports Functional+Graph Operations
+  \item Eventually have the compiler be self-hosted
+  \item Learn technical writing
+\end{enumerate}
+
+The plan is to first have a basic turing-complete language with a custom backend and later switch to using LLVM/MLIR backend when I start playing around with Functional Programming Concepts or Graph Operations.
+
+\section{Technical Stack}
+This section is a high-level overview of the compiler's internals.
+
+\subsection{v0.1}
+The compiler is written in Rust using chumsky module for frontend lexer and parser. I choose Rust simply because I wanted to get better in the language. The reason for choosing a parser generator was to make it easier for me to change the language grammar easily since in the early stages, I expect the grammar to change frequently.
+
+\todo[inline]{Add more details as implementation progresses.}
+
+\section{Roadmap}
+\subsection{May-Aug 2026}
+\begin{itemize}
+  \item Basic Language Specification for v0.1
+  \item Lexer and Parser
+  \item Symbol Table and Semantic Analysis
+  \item Writeup Specification for Intermediate Representation
+  \item Instruction Section - inspired from LLVM's GlobalISel
+  \item Register Allocation
+  \item Instruction Scheduling
+  \item Complete Backend for macOS
+\end{itemize}
+
+\end{document}
