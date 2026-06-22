@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+\documentclass[11pt]{book}
 \input{structure.tex}
 
 \title{Toyl Language Reference v0.1}
@@ -7,6 +7,129 @@
 
 \begin{document}
 \maketitle
+
+\chapter{Spec for V0.1}
+
+% \section{Features/Limitations}
+% \begin{itemize}
+%   \item Statically and Strongly Typed
+%   \item Compiled
+%   \item Only Int, Float, Boolean, Constant-size arrays/string, nil.
+%   \item No heap or memory management
+% \end{itemize}
+
+\section{Statically \& Strongly Typed and Compiled}
+Toyl v0.1 will be a Statically and Strongly Typed. All variables will be allocated on Stack or in Data Section. Types will not be implicitly converted, i.e., $int + float$ will not result in the $int$ being promoted to $float$.
+
+\section{No heap or memory management}
+To keep the implementation simple and manageable, v0.1 will not have any support for heap memory or any kind of runtime memory allocation. Eventually when this feature is added, Toyl will use Rust style Ownership+Swift style ARC to do automatic memory management.
+
+\section{Builtin Datatypes}
+v0.1 will only support \textit{int}, \textit{float}, \textit{boolean}, \textit{nil} and \textit{constant-size array}
+
+\begin{itemize}
+  \item \textit{int}: Toyl v0.1 has 4 int subtypes: \texttt{i8}, Numbers can start with: A digit, +/- signs, \texttt{0x} or \texttt{0X} for hexadecimal, \texttt{0o} or \texttt{0O} for Octal, \texttt{0b} or \texttt{0B} for Binary.
+
+  \item \textit{float}: Toyl v0.1 has 3 subtypes: \texttt{fp16}, \texttt{fp32}, \texttt{fp64}. Floating point numbers can contain digits, period and +/- signs. If a floating-point number doesn't contain the decimal part, it can be suffixed with \texttt{f} or \texttt{F} to explicitly specify the literal is a floating-point number.
+
+  \item \textit{boolean}: Defined using \texttt{bool}. Can be either \texttt{true} or \texttt{false}. Other types are not implicitly converted to Boolean, for example, 0 is not converted to \texttt{false}
+
+  \item \textit{nil}: This is a temp. builtin type to allow variables to be null or nil. Later versions will not allow nil values for variables. All variables must have a defined values.
+
+  \item \textit{constant-size array}: Constant fixed size arrays of other ``scaler'' datatypes.
+\end{itemize}
+\section{Lexical Rules}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|c|c|}
+    \hline
+    Token Type & Token Value \\ \hline
+    \multicolumn{2}{|c|}{Keywords} \\ \hline
+    \texttt{kw\_fn} & \texttt{fn} \\
+    \texttt{kw\_var} & \texttt{var} \\
+    \texttt{kw\_for} & \texttt{for} \\
+    \texttt{kw\_in} & \texttt{in} \\
+    \texttt{kw\_while} & \texttt{while} \\
+    \texttt{kw\_if} & \texttt{if} \\
+    \texttt{kw\_else} & \texttt{else} \\
+    \texttt{kw\_break} & \texttt{break} \\
+    \texttt{kw\_continue} & \texttt{continue} \\
+    \texttt{kw\_return} & \texttt{return} \\
+    \texttt{kw\_nil} & \texttt{nil} \\
+    \texttt{kw\_true} & \texttt{true} \\
+    \texttt{kw\_false} & \texttt{false} \\ \hline
+    \multicolumn{2}{|c|}{Literals} \\ \hline
+    \texttt{identifier} & \texttt{/[A-Za-z\_][A-Za-z0-9\_]*/} \\
+    \texttt{int\_literal} & \ref{item:lr_int_literal} \\
+    \texttt{float\_literal} & \ref{item:lr_float_literal} \\
+    \texttt{singleline\_comment} & \texttt{/\/\/.*/} \\
+    multiline\_comment & \verb|/\*[\s\S]*?\*/| \\ \hline
+    \multicolumn{2}{|c|}{Miscellaneous} \\ \hline
+    \texttt{tk\_eof} & End of File \\
+    \texttt{tk\_unknown} & Unknown Token \\
+    \hline
+  \end{tabular}
+  \hspace{1cm}
+  \begin{tabular}{|c|c|}
+    \hline
+    Token Type & Token Value \\ \hline
+    \multicolumn{2}{|c|}{Punctuation} \\ \hline
+    \texttt{colon} & \texttt{:} \\
+    \texttt{arrow} & \texttt{->} \\
+    \texttt{comma} & \texttt{,} \\
+    \texttt{semicolon} & \texttt{;} \\
+    \texttt{l\_param} & \texttt{(} \\
+    \texttt{r\_param} & \texttt{)} \\
+    \texttt{l\_brace} & \texttt{\{} \\
+    \texttt{r\_brace} & \texttt{\}} \\
+    \texttt{l\_square} & \texttt{[} \\
+    \texttt{r\_square} & \texttt{]} \\
+    \texttt{equal} & \texttt{=} \\
+    \texttt{equalequal} & \texttt{==} \\
+    \texttt{plus} & \texttt{+} \\
+    \texttt{minus} & \texttt{-} \\
+    \texttt{star} & \texttt{*} \\
+    \texttt{slash} & \texttt{/} \\
+    \texttt{percent} & \texttt{\%} \\
+    \texttt{less} & \texttt{<} \\
+    \texttt{lesequal} & \texttt{<=} \\
+    \texttt{greater} & \texttt{>} \\
+    \texttt{greaterequal} & \texttt{>=} \\
+    \texttt{exclaim} & \texttt{!} \\
+    \texttt{exclaimequal} & \texttt{!=} \\
+    \texttt{ampamp} & \texttt{\&\&} \\
+    \texttt{pipepipe} & \texttt{||} \\
+    \texttt{in\_range} & \texttt{...} \\
+    \texttt{ex\_range} & \texttt{..<} \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\begin{enumerate}[label=\thesection.\arabic*]
+  \item \label{item:lr_int_literal} Integer Literal: \texttt{/(0[xX][0-9a-f]+|0[bB][01]+|0[oO][0-7]+|[0-9]+)/}
+  \item \label{item:lr_float_literal} Float Literal: {\small \texttt{/([0-9]+\.[0-9]+([eE][+-]?[0-9]+)?[fF]?|[0-9]+[eE][+-]?[0-9]+[fF]?|[0-9]+[fF])/}}
+\end{enumerate}
+\section{Grammar}
+
+\section{Semantic Rules}
+
+\section{Data Types}
+
+
+
+% \section{Expressions}
+% \subsection{Arithmetic}
+% \subsection{Relational}
+% \subsection{Logical}
+% \subsection{Precedence and grouping}
+
+% \section{Statements}
+% \section{Variables}
+% \section{Control Flow}
+% \subsection{Branching}
+% \subsection{Loops}
+% \section{Functions}
 
 
 \end{document}
